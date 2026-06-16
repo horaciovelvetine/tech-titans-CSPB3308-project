@@ -9,7 +9,7 @@ Meets: Tuesdays @ 5pm (MST)
 
 - Theodore Matthews
   - User: tmatthews092
-  - Email: 
+  - Email: theodore.matthews@colorado.edu
 - Owen Ahlers
   - User: oahlers226
   - Email: owen@owenahlers.com
