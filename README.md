@@ -12,7 +12,7 @@ Meets: Tuesdays @ 5pm (MST)
   - Email: 
 - Owen Ahlers
   - User: oahlers226
-  - Email: 
+  - Email: owen@owenahlers.com
 - James Tillman
   - User: horaciovelvetine
   - Email: James.Tillman@colorado.edu
