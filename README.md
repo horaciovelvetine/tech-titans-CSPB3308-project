@@ -17,7 +17,7 @@
   - Email: James.Tillman@colorado.edu
 - Woobin Huh
   - User: woobinhuh-creator
-  - Email:
+  - Email: woobinhuh@gmail.com
 
 ## Vision Statement
 
