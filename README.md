@@ -1,7 +1,7 @@
 # Tech Titans CSPB-3308 Summer 2026 Project
 
 - Team #5 Team Name: Tech Titans
-- Product Name: Logit Legos
+- Product Name: Brick Oracle
 - Meets: Tuesdays @ 5pm (MST)
 
 ## Members
@@ -45,6 +45,20 @@ No matter the size of the Lego collection it can be hard to stay organized and k
   - https://www.bricklink.com/catalogTree.asp?itemType=P
   - https://rebrickable.com/downloads/
 
-## Development Method & Tracking Details
+## Development Methods
+
+The team will follow an Agile, sprint-based approach with weekly planning meetings, short development iterations, and continuous integration. Work will be decomposed into small, independently testable components to enable rapid feedback and adapation as the project evolves. Progress will be tracked via GitHub Kanban board with each sprint ending in a review to access deliverables and reprioritize if needed.
+
+## Development Steps
+
+1. Define project epics, user stories, and functional and non-functional requirements.
+2. Design database schema for users, user brick collection, lego sets, bricks, and build instructions.
+3. Implement backend API endpoints for user functions such as lego set search and brick collection upload.  
+4. Build frontend components such as catalogue search, set views, and brick collection upload and view.
+5. Integrate frontend and backend components together.
+6. Conduct UAT. Loop on bugs found, fixes, and testing until the team is satisfied with behavior and functionality.
+7. Prepare final presentation and documentation.
+
+## Tracking Details
 
 Kanban boarding using GitHub's project tool (attached to this repository) available [here](https://github.com/users/horaciovelvetine/projects/7). Tickets are created via a GitHub issue for the project repo [here](https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues). To be included in the Kanban board for the project the issue must include the 'project' using the issue sidebar UI - after being included in the project it can be assigned to any: milestone, priority, label, or team member in addition to the ability to split any large issue into sub-issues. This provides a means for tracking responsibilities and updates in a shared space, seeing other team members progress, and comments for review and discussion.
