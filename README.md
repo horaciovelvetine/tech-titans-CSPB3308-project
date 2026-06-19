@@ -62,3 +62,15 @@ The team will follow an Agile, sprint-based approach with weekly planning meetin
 ## Tracking Details
 
 Kanban boarding using GitHub's project tool (attached to this repository) available [here](https://github.com/users/horaciovelvetine/projects/7). Tickets are created via a GitHub issue for the project repo [here](https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues). To be included in the Kanban board for the project the issue must include the 'project' using the issue sidebar UI - after being included in the project it can be assigned to any: milestone, priority, label, or team member in addition to the ability to split any large issue into sub-issues. This provides a means for tracking responsibilities and updates in a shared space, seeing other team members progress, and comments for review and discussion.
+
+## Technology Stack
+
+### Frontend
+- HTML/CSS for layout and styling
+- JavaScript with React for interactive UI components
+
+### Backend
+- Python with Flask for RESTful API development
+
+### Database
+- SQLite for development with the option to migrate to PostgreSQL
