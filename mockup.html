@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Mockup</title>
+  <style>
+    :root {
+      --bg: #f6f8ff;
+      --surface: #ffffff;
+      --ink: #1f2a44;
+      --muted: #617196;
+      --line: #dbe3fb;
+      --brand: #2463eb;
+      --brand-soft: #eaf1ff;
+      --ok: #1f9d62;
+      --warn: #c67500;
+      --chip: #eef3ff;
+      --shadow: rgba(22, 34, 71, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 400px at 10% -10%, #e9f1ff, transparent),
+        radial-gradient(800px 400px at 100% -10%, #f0ebff, transparent),
+        var(--bg);
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.1px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    p { margin: 6px 0; line-height: 1.45; }
+
+    .muted { color: var(--muted); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      background: var(--chip);
+      color: #324a85;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    a.chip {
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    a.chip:hover { border-color: #b8cbff; }
+
+    .flow {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .node {
+      background: var(--brand-soft);
+      border: 1px solid #cddcff;
+      color: #2852b2;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-weight: 600;
+    }
+
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 75px;
+        margin-top: 30px;
+    }
+
+    .screen {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .screen-head {
+      background: #f7faff;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .screen-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .issue-link {
+      font-size: 12px;
+      color: #3b5ea9;
+      background: #eef3ff;
+      border: 1px solid #d6e1ff;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-weight: 600;
+    }
+
+    a.issue-link { text-decoration: none; }
+    a.issue-link:hover { border-color: #b8cbff; }
+
+    .screen-body {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .wire {
+      border: 1px dashed #bfd0fb;
+      border-radius: 9px;
+      padding: 10px;
+      background: #fbfdff;
+      color: #3d4f7d;
+      font-size: 13px;
+    }
+
+    .wire strong { color: #22345e; }
+
+    .io-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .io {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .io ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .states {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .state {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 12px;
+      background: #fff;
+    }
+
+    .state.ok { border-color: #b9e8d0; background: #f3fff9; color: #1b6c45; }
+    .state.warn { border-color: #ffe3b1; background: #fffaf0; color: #8a5a00; }
+    .state.err { border-color: #ffd2d2; background: #fff4f4; color: #8a2b2b; }
+
+    @media (max-width: 1020px) {
+      .screens { grid-template-columns: 1fr; }
+      .io-grid { grid-template-columns: 1fr; }
+      .states { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="panel">
+      <h1>Brick Oracle - Product UI Mockup</h1>
+      <p class="muted">
+        Screen-level mockup built from current user stories and issues. Focus is user input, expected output, and UI states for demo readiness.
+      </p>
+      <div class="chips">
+        <a class="chip" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/3" target="_blank" rel="noopener noreferrer">#3 Search Bar</a>
+        <a class="chip" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/9" target="_blank" rel="noopener noreferrer">#9 Set Viewer</a>
+        <a class="chip" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/5" target="_blank" rel="noopener noreferrer">#5 Collection Store</a>
+        <a class="chip" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/8" target="_blank" rel="noopener noreferrer">#8 Collection Viewer</a>
+        <a class="chip" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/4" target="_blank" rel="noopener noreferrer">#4 Upload Collection</a>
+        <a class="chip" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/10" target="_blank" rel="noopener noreferrer">#10 Missing Piece Finder</a>
+      </div>
+      <div class="flow">
+        MVP flow:
+        <span class="node">Search</span> ->
+        <span class="node">Set Detail</span> ->
+        <span class="node">Add to Collection</span> ->
+        <span class="node">Collection View</span>
+      </div>
+    </section>
+
+    <section class="screens">
+      <article class="screen">
+        <header class="screen-head">
+          <div class="screen-title">Screen A. Search Page</div>
+          <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/3" target="_blank" rel="noopener noreferrer">#3 Search Bar</a>
+        </header>
+        <div class="screen-body">
+          <div class="wire"><strong>Top Bar:</strong> logo, nav, quick link to collection</div>
+          <div class="wire"><strong>Main Input:</strong> keyword/set number text field + Search button</div>
+          <div class="wire"><strong>Result List:</strong> set image, set id, set name, piece count, "View Set" button</div>
+          <div class="io-grid">
+            <section class="io">
+              <h3>Inputs</h3>
+              <ul>
+                <li>query text (set name or set number)</li>
+                <li>optional sort option (relevance, piece count)</li>
+              </ul>
+            </section>
+            <section class="io">
+              <h3>Outputs</h3>
+              <ul>
+                <li>search result cards with matched sets</li>
+                <li>result count and query summary</li>
+              </ul>
+            </section>
+          </div>
+          <div class="states">
+            <div class="state ok"><strong>Success:</strong> relevant set cards displayed.</div>
+            <div class="state warn"><strong>Empty Query:</strong> "Enter a set name or number".</div>
+            <div class="state err"><strong>No Match:</strong> "No sets found" + refine tips.</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen">
+        <header class="screen-head">
+          <div class="screen-title">Screen B. Set Detail Page</div>
+          <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/9" target="_blank" rel="noopener noreferrer">#9 Set Viewer</a>
+        </header>
+        <div class="screen-body">
+          <div class="wire"><strong>Set Header:</strong> image, set name, set id, theme, piece count</div>
+          <div class="wire"><strong>Actions:</strong> Add to Collection, Compare with My Inventory</div>
+          <div class="wire"><strong>Part Summary:</strong> top required parts and colors</div>
+          <div class="io-grid">
+            <section class="io">
+              <h3>Inputs</h3>
+              <ul>
+                <li>set id from search results</li>
+                <li>user click on "Add to Collection"</li>
+              </ul>
+            </section>
+            <section class="io">
+              <h3>Outputs</h3>
+              <ul>
+                <li>set metadata and inventory summary</li>
+                <li>confirmation toast after add action</li>
+              </ul>
+            </section>
+          </div>
+          <div class="states">
+            <div class="state ok"><strong>Success:</strong> set detail loaded and actions enabled.</div>
+            <div class="state warn"><strong>Partial Data:</strong> missing image fallback shown.</div>
+            <div class="state err"><strong>Load Error:</strong> retry button + error text.</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen">
+        <header class="screen-head">
+          <div class="screen-title">Screen C. Collection Page</div>
+          <div>
+            <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/5" target="_blank" rel="noopener noreferrer">#5 Collection Store</a>
+            <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/8" target="_blank" rel="noopener noreferrer">#8 Collection Viewer</a>
+          </div>
+        </header>
+        <div class="screen-body">
+          <div class="wire"><strong>Collection Stats:</strong> total sets, total pieces, recent adds</div>
+          <div class="wire"><strong>My Sets Table:</strong> set id, name, owned qty, remove action</div>
+          <div class="wire"><strong>Insight Widget:</strong> "Closest buildable sets" preview</div>
+          <div class="io-grid">
+            <section class="io">
+              <h3>Inputs</h3>
+              <ul>
+                <li>add/remove set actions</li>
+                <li>filter by theme or piece range</li>
+              </ul>
+            </section>
+            <section class="io">
+              <h3>Outputs</h3>
+              <ul>
+                <li>updated set list and totals</li>
+                <li>persistence confirmation in collection store</li>
+              </ul>
+            </section>
+          </div>
+          <div class="states">
+            <div class="state ok"><strong>Success:</strong> collection saved and refreshed.</div>
+            <div class="state warn"><strong>Empty Collection:</strong> CTA to search sets.</div>
+            <div class="state err"><strong>Save Error:</strong> local retry + warning banner.</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen">
+        <header class="screen-head">
+          <div class="screen-title">Screen D-1. Collection Input (Default)</div>
+          <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/5" target="_blank" rel="noopener noreferrer">#5 Collection Store</a>
+        </header>
+        <div class="screen-body">
+          <div class="wire"><strong>Quick Add Form:</strong> add by set number or part number with quantity</div>
+          <div class="wire"><strong>Input Helpers:</strong> inline validation, recent additions, duplicate warning</div>
+          <div class="wire"><strong>Collection Update Feed:</strong> latest added sets/parts with undo action</div>
+          <div class="io-grid">
+            <section class="io">
+              <h3>Inputs</h3>
+              <ul>
+                <li>manual set/part entry with quantity</li>
+                <li>quick add submit and undo actions</li>
+              </ul>
+            </section>
+            <section class="io">
+              <h3>Outputs</h3>
+              <ul>
+                <li>collection update summary for manual entries</li>
+                <li>persistent collection records in store</li>
+              </ul>
+            </section>
+          </div>
+          <div class="states">
+            <div class="state ok"><strong>Success:</strong> item added to collection immediately.</div>
+            <div class="state warn"><strong>Warning:</strong> duplicate entry, ask to merge quantity.</div>
+            <div class="state err"><strong>Error:</strong> invalid set/part id format.</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen">
+        <header class="screen-head">
+          <div class="screen-title">Screen D-2. Advanced Import + Missing Piece Finder</div>
+          <div>
+            <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/4" target="_blank" rel="noopener noreferrer">#4 Upload Collection</a>
+            <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/10" target="_blank" rel="noopener noreferrer">#10 Missing Piece Finder</a>
+            <a class="issue-link" href="https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/issues/7" target="_blank" rel="noopener noreferrer">#7 Brick Diff</a>
+          </div>
+        </header>
+        <div class="screen-body">
+          <div class="wire"><strong>Bulk Import (Advanced):</strong> upload CSV + template download + format guide</div>
+          <div class="wire"><strong>Validation Panel:</strong> parsed rows, invalid rows, fix hints, manual correction action</div>
+          <div class="wire"><strong>Comparison Output:</strong> missing piece list by target set + completion percent</div>
+          <div class="io-grid">
+            <section class="io">
+              <h3>Inputs</h3>
+              <ul>
+                <li>CSV inventory file</li>
+                <li>target set selection for comparison</li>
+              </ul>
+            </section>
+            <section class="io">
+              <h3>Outputs</h3>
+              <ul>
+                <li>import summary (accepted/rejected rows)</li>
+                <li>missing pieces table and build completion score</li>
+              </ul>
+            </section>
+          </div>
+          <div class="states">
+            <div class="state ok"><strong>Success:</strong> import completed and missing-piece diff generated.</div>
+            <div class="state warn"><strong>Validation Warning:</strong> malformed import rows with suggested fixes.</div>
+            <div class="state err"><strong>Format Error:</strong> invalid CSV schema message.</div>
+          </div>
+          <div class="wire">
+            <strong>Complexity Notes (D-2):</strong>
+            <ul>
+              <li>CSV schemas differ by source, so parser normalization is required.</li>
+              <li>Part ID and color mapping must be reliable before missing-piece diff is trustworthy.</li>
+              <li>Large uploads need validation performance and clear row-level error reporting.</li>
+              <li>Diff logic must handle duplicate rows and quantity aggregation correctly.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
