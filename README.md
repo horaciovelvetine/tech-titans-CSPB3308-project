@@ -21,7 +21,7 @@
 
 ## Vision Statement
 
-A Lego collection may be a world of creative possibilities, but it's impossible to know if you've got everything you're going to need for that next build in that uncatalogued mess of a bin. Enter, Logit Legos: a searchable Lego cataloging web app that helps you keep track of your growing collection. An easy-to-use dashboard with tools to: import your sets, search for pieces, manage a collection, and plan out builds before the bricks hit the baseplate.
+A Lego collection may be a world of creative possibilities, but it's impossible to know if you've got everything you're going to need for that next build in that uncatalogued mess of a bin. Enter, Brick Oracle: a searchable Lego cataloging web app that helps you keep track of your growing collection. An easy-to-use dashboard with tools to: import your sets, search for pieces, manage a collection, and plan out builds before the bricks hit the baseplate.
 
 ## Motivation
 
