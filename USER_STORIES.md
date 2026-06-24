@@ -81,8 +81,6 @@
 ### CAD Viewer
 > As a user, I want to digitally see my sets, collection, and build sets so that I can view them in a different way.
 
----
-
 ## Admin
 
 ### Flag / Correct Inaccurate Sets
