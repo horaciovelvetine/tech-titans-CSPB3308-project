@@ -44,4 +44,23 @@
     - Turn in 6/18 for Milestone 1
 - Start creating user stories based on app features
 
+--------
 
+# 06/24/2026:
+### Status: 
+- Working towards Milestone 2 recording and incorporating instructor feedback. Primarily focused on planning stories to cement structure and functionality and establish MVP success criteria for project overall.
+
+### Notes: 
+- Meeting recorded for Milestone 2 assignment 
+- Preview User Stories doc created by Theo
+- Preview Mock HTML doc created by Woobin
+- Discuss shared workflow for wireframing and mocking 
+- Establish MVP ordering and task priority
+
+### Action Items
+- Research Wireframing tools 
+- Flush out User Stories and define larger Feature bounds
+- Flush out component tasks required to complete defined Features
+- Initialize apps in accordance with agreed upon stack 
+- Update GitHub project with issues and begin project tracking process
+- Establish conventions for working on GitHub project - establish conventions for: Features, Tasks, Sub-Tasks, Labels, and Issue Tracking/Project Tracking as a whole.
