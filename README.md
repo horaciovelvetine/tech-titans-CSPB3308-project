@@ -67,10 +67,17 @@ Kanban boarding using GitHub's project tool (attached to this repository) availa
 
 ### Frontend
 - HTML/CSS for layout and styling
-- JavaScript with React for interactive UI components
+- TypeScript with React for interactive UI components
 
 ### Backend
 - Python with Flask for RESTful API development
 
 ### Database
 - SQLite for development with the option to migrate to PostgreSQL
+
+## Helpful Links
+
+- https://docs.astral.sh/uv/ (UV Python Project Management Docs)
+- https://flask.palletsprojects.com/en/stable/ (Flask Docs)
+- https://react.dev/reference/react (React API Ref Docs)
+- https://vite.dev/guide/ (Vite TypeScript Project Manager Docs)
