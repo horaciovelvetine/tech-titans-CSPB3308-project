@@ -57,10 +57,34 @@
 - Discuss shared workflow for wireframing and mocking 
 - Establish MVP ordering and task priority
 
-### Action Items
+### Action Items:
 - Research Wireframing tools 
 - Flush out User Stories and define larger Feature bounds
 - Flush out component tasks required to complete defined Features
 - Initialize apps in accordance with agreed upon stack 
 - Update GitHub project with issues and begin project tracking process
 - Establish conventions for working on GitHub project - establish conventions for: Features, Tasks, Sub-Tasks, Labels, and Issue Tracking/Project Tracking as a whole.
+
+--------
+
+# 06/30/2026:
+### Status:
+
+- Looking forward towards Milestone 4 and transitioning from user stories to what that means in terms of UI/UX. Beginning to establish project domain definitions.
+
+### Notes:
+- Applications initialized in repo per stack 
+- Established Figma as application to collaborate on developing wireframes
+- Completed User story list inside of Google Docs
+- Translated User stories into issues on GitHub (being used for project tracking)
+- Stories completely broken down into major features and sub-features with prioritizing
+- Team access to Figma
+- Established 5 page target for Milestone 4: Home (Index), Set Browser, Collection Browser, Set Builder, About, and Auth
+
+### Action Items:
+- Complete wireframe buildout for 5 pages
+- Finalize layouts and feature presence/links across pages
+- Include completed wireframes for reference inside of GitHub issues/tasks
+- Complete web page design `PAGE_TESTING.md` doc for Milestone 4
+- Begin to define domain items and required parameters for pages
+- Take notes from coursework on SQL integration with Flask for use in project
