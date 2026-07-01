@@ -1,3 +1,6 @@
+# Tech-Titans Team 5 Weekly Updates:
+https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/blob/master/WEEKLY_STATUS.md
+
 # TEMPLATE - mm/dd/yyyy:
 ### Status:
 
