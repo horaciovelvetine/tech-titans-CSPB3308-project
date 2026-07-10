@@ -91,3 +91,19 @@ https://github.com/horaciovelvetine/tech-titans-CSPB3308-project/blob/master/WEE
 - Complete web page design `PAGE_TESTING.md` doc for Milestone 4
 - Begin to define domain items and required parameters for pages
 - Take notes from coursework on SQL integration with Flask for use in project
+
+
+# 07/07/2026:
+### Status:
+- Fully fleshed out wireframes in preparation for milestone 4. Beginning to fillout wireframe details regarding data, templates, API, and testing.
+
+### Notes:
+- Copied Figma wireframes over to group document
+- Fleshed out supporting details for wireframes for milestone 4.
+- Broke down tasks to progress towards milestone 5, starting with securing brick
+- Considered how to apply week 7 material regarding database testing
+
+### Action Items:
+- Turn in Milestone 4
+- Secure brick data from one of our sources
+- Create database scheme and start on DB testing
