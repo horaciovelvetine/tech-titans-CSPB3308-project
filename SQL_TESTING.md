@@ -1,7 +1,6 @@
 # Project Milestone 5: SQL Design
 
-Team 5: Brick Oracle.
-Backend **SQLite** DB accessed through **SQLAlchemy** via a Flask service layer at [backend/brick-oracle-api/](backend/brick-oracle-api/).
+Team 5: Brick Oracle. Backend **SQLite** DB accessed through **SQLAlchemy** via a Flask service layer at [backend/brick-oracle-api/](backend/brick-oracle-api/).
 
 # Database Tables
 
@@ -58,6 +57,7 @@ Maps parts (and their colors) to a specific inventory, including quantity and wh
 | color_id | Color of the part | Foreign key → colors.id |
 | quantity | Number of this part in the inventory | NOT NULL |
 | is_spare | Whether this part is a spare | NOT NULL |
+| img_url | Image URL for the part in this color | Nullable |
 
 ### Relationships
 
@@ -125,6 +125,7 @@ Stores reference data for LEGO minifigures.
 | fig_num    | Unique minifig identifier      | Primary key |
 | name       | Minifig display name           | NOT NULL    |
 | num_parts  | Number of parts in the minifig | NOT NULL    |
+| img_url    | Image URL for the minifig      | Nullable    |
 
 ### Relationships
 
@@ -147,6 +148,7 @@ Stores reference data for LEGO sets, including name, release year, theme, and pa
 | year       | Year the set was released  |                         |
 | theme_id   | Theme the set belongs to   | Foreign key → themes.id |
 | num_parts  | Number of parts in the set |                         |
+| img_url    | Image URL for the set      | Nullable                |
 
 ### Relationships
 
@@ -188,6 +190,7 @@ Stores reference data for individual LEGO parts.
 | part_num | Unique part identifier | Primary key |
 | name | Part display name | NOT NULL |
 | part_cat_id | Category this part belongs to | Foreign key → part_categories.id |
+| part_material | Material the part is made of (e.g. Plastic, Rubber) | Nullable |
 
 ### Relationships
 
@@ -206,12 +209,16 @@ Stores reference data for LEGO colors, including RGB values and transparency.
 
 ### Fields
 
-| Field Name | Description                      | Constraints |
-| ---------- | -------------------------------- | ----------- |
-| id         | Unique color identifier          | Primary key |
-| name       | Color display name               | NOT NULL    |
-| rgb        | Hex RGB color value              | NOT NULL    |
-| is_trans   | Whether the color is transparent | NOT NULL    |
+| Field Name | Description                               | Constraints |
+| ---------- | ----------------------------------------- | ----------- |
+| id         | Unique color identifier                   | Primary key |
+| name       | Color display name                        | NOT NULL    |
+| rgb        | Hex RGB color value                       | NOT NULL    |
+| is_trans   | Whether the color is transparent          | NOT NULL    |
+| num_parts  | Number of distinct parts using this color | Nullable    |
+| num_sets   | Number of sets that include this color    | Nullable    |
+| y1         | First year the color appeared             | Nullable    |
+| y2         | Last year the color appeared              | Nullable    |
 
 ### Relationships
 
@@ -275,6 +282,7 @@ Maps LEGO element IDs to a specific part and color combination. An element is a 
 | element_id | Unique element identifier    | Primary key                  |
 | part_num   | Part this element represents | Foreign key → parts.part_num |
 | color_id   | Color of this element        | Foreign key → colors.id      |
+| design_id  | Alternate design identifier  | Nullable                     |
 
 ### Relationships
 
