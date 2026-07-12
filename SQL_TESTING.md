@@ -16,6 +16,11 @@ Team 5: Brick Oracle. Backend **SQLite** DB accessed through **SQLAlchemy** via 
 - `themes`
 - `part_relationships`
 - `elements`
+- `users`
+- `collections`
+- `collection_parts`
+- `storage_bins`
+- `bin_parts`
 
 ---
 
@@ -39,6 +44,8 @@ Stores inventory records for LEGO sets. Each inventory represents a specific ver
 - One-to-many with `inventory_parts`
 - One-to-many with `inventory_minifigs`
 - One-to-many with `inventory_sets`
+
+**Query note:** When resolving a set's parts for Brick Diff, always select the inventory with the highest `version` for a given `set_num`. Multiple inventory records can exist per set; using an outdated version will produce incorrect diff results.
 
 ---
 
@@ -290,3 +297,139 @@ Maps LEGO element IDs to a specific part and color combination. An element is a 
 - Many-to-one with `colors`
 
 ---
+
+## 13) Table: users
+
+### Table Description
+
+Stores registered user accounts. Required by User Login, Collection Viewer, Brick Diff, and Collection Storage.
+
+### Fields
+
+| Field Name    | Description                | Constraints      |
+| ------------- | -------------------------- | ---------------- |
+| id            | Unique user identifier     | Primary key      |
+| username      | User's display name        | NOT NULL, UNIQUE |
+| email         | User's email address       | NOT NULL, UNIQUE |
+| password_hash | Hashed password            | NOT NULL         |
+| created_at    | Account creation timestamp | NOT NULL         |
+
+### Relationships
+
+- One-to-many with `collections`
+- One-to-many with `storage_bins`
+
+---
+
+## 14) Table: collections
+
+### Table Description
+
+Stores a user's named LEGO collections. A user may have multiple collections. Required by Upload Collection, Collection Viewer, and Brick Diff.
+
+### Fields
+
+| Field Name | Description                   | Constraints                      |
+| ---------- | ----------------------------- | -------------------------------- |
+| id         | Unique collection identifier  | Primary key                      |
+| user_id    | User who owns this collection | Foreign key → users.id, NOT NULL |
+| name       | Collection display name       | NOT NULL                         |
+| created_at | Collection creation timestamp | NOT NULL                         |
+
+### Relationships
+
+- Many-to-one with `users`
+- One-to-many with `collection_parts`
+
+---
+
+## 15) Table: collection_parts
+
+### Table Description
+
+Junction table mapping parts and colors to a user's collection with owned quantity. This table is the user-owned counterpart to `inventory_parts` and is the left-hand side of every Brick Diff calculation. Required by Upload Collection, Collection Viewer, and Brick Diff.
+
+### Fields
+
+| Field Name    | Description                     | Constraints                            |
+| ------------- | ------------------------------- | -------------------------------------- |
+| id            | Unique record identifier        | Primary key                            |
+| collection_id | Collection this part belongs to | Foreign key → collections.id, NOT NULL |
+| part_num      | Part identifier                 | Foreign key → parts.part_num, NOT NULL |
+| color_id      | Color of the owned part         | Foreign key → colors.id, NOT NULL      |
+| quantity      | Number of this part owned       | NOT NULL                               |
+
+### Relationships
+
+- Composite unique constraint on (`collection_id`, `part_num`, `color_id`)
+- Many-to-one with `collections`
+- Many-to-one with `parts`
+- Many-to-one with `colors`
+
+---
+
+## 16) Table: storage_bins
+
+### Table Description
+
+Stores user-defined physical storage bins for organizing LEGO parts. Each bin is user-specific.
+
+### Fields
+
+| Field Name | Description                                | Constraints                      |
+| ---------- | ------------------------------------------ | -------------------------------- |
+| id         | Unique bin identifier                      | Primary key                      |
+| user_id    | User who owns this bin                     | Foreign key → users.id, NOT NULL |
+| name       | Bin display name (e.g. "Red Parts Drawer") | NOT NULL                         |
+
+### Relationships
+
+- Many-to-one with `users`
+- One-to-many with `bin_parts`
+
+---
+
+## 17) Table: bin_parts
+
+### Table Description
+
+Junction table mapping parts to a storage bin with quantity. A part (by part_num + color_id) can only exist in one bin per user, enforced by a unique constraint.
+
+### Fields
+
+| Field Name | Description                    | Constraints                             |
+| ---------- | ------------------------------ | --------------------------------------- |
+| id         | Unique record identifier       | Primary key                             |
+| bin_id     | Bin this part is stored in     | Foreign key → storage_bins.id, NOT NULL |
+| part_num   | Part identifier                | Foreign key → parts.part_num, NOT NULL  |
+| color_id   | Color of the stored part       | Foreign key → colors.id, NOT NULL       |
+| quantity   | Number of this part in the bin | NOT NULL                                |
+
+### Relationships
+
+- Composite unique constraint on (`part_num`, `color_id`, `bin_id`)
+- Many-to-one with `storage_bins`
+- Many-to-one with `parts`
+- Many-to-one with `colors`
+
+**Constraint note:** To enforce that a brick cannot exist in two bins for the same user, validate on write that the (`part_num`, `color_id`) combination does not already exist in another bin owned by the same user.
+
+---
+
+## 18) Brick Diff Query Pattern
+
+### Description
+
+There is no direct relationship between `sets` and `parts` in the schema. To get the parts for a set you have to join through `inventories`. A set can also have multiple inventory records at different versions, so always use `MAX(version)` to get the correct one.
+
+This join path is used by Brick Diff, Set Viewer, and Set Progress Tracker. Write it once as a shared service method.
+
+### Join Path
+
+```
+sets -> inventories (MAX version) -> inventory_parts -> parts + colors
+```
+
+### Notes
+
+- `BrickDiffDTO` should include both the set quantity and the user's owned quantity per part so the frontend can render the diff without a second API call
