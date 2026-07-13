@@ -1,3 +1,6 @@
 .vscode
 .DS_Store
 !.DS_Store/
+
+# Remove .sqlite DB from tracking
+backend/instance/
