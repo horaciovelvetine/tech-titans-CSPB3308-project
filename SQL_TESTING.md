@@ -73,6 +73,31 @@ Maps parts (and their colors) to a specific inventory, including quantity and wh
 - Many-to-one with `parts`
 - Many-to-one with `colors`
 
+### Table Tests
+
+**Use Case Name:** Get non-spare parts for an inventory
+
+**Description:** Verify that filtering by `is_spare = false` returns only required parts and excludes spares.
+
+**Pre-conditions:** An inventory exists with at least one spare part and at least one non-spare part.
+
+**Test Steps:**
+1. Insert one row with `is_spare = true` and one row with `is_spare = false` for the same `inventory_id`.
+2. Query:
+   ```sql
+   SELECT *
+   FROM inventory_parts
+   WHERE inventory_id = ?
+     AND is_spare = false;
+   ```
+**Expected Result:** Only the non-spare row is returned.
+
+**Actual Result:** One row returned with `is_spare = false`.
+
+**Status:** Pass
+
+**Post-conditions:** None
+
 ---
 
 ## 3) Table: inventory_minifigs
@@ -94,6 +119,25 @@ Maps minifigs to a specific inventory with quantity counts.
 - Composite primary key (`inventory_id`, `fig_num`)
 - Many-to-one with `inventories`
 - Many-to-one with `minifigs`
+
+### Table Tests
+
+**Access method:** Get minifigs by `fig_num`
+
+**Use Case Name:** Validate non-null values
+
+**Description:** Query for missing or invalid database items.
+
+**Pre-conditions:** Database running.
+
+**Test Steps:**
+1. Left join `inventory_id` to `inventories`.
+2. Left join `fig_num` to `minifigs`.
+3. Query for null values.
+
+**Expected Result:** Zero rows are returned.
+**Status:** Pass
+**Post-conditions:** None
 
 ---
 
@@ -319,6 +363,23 @@ Stores registered user accounts. Required by User Login, Collection Viewer, Bric
 - One-to-many with `collections`
 - One-to-many with `storage_bins`
 
+### Table Tests
+
+**Use Case Name:** Create valid user
+
+**Description:** Verify that a new user can be inserted and retrieved.
+
+**Pre-conditions:** No user with the given email exists.
+
+**Test Steps:**
+1. Insert a valid user row.
+2. Query by email.
+
+**Expected Result:** User row exists.
+**Actual Result:** User returned by query.
+**Status:** Pass
+**Post-conditions:** User persisted in database.
+
 ---
 
 ## 14) Table: collections
@@ -340,6 +401,28 @@ Stores a user's named LEGO collections. A user may have multiple collections. Re
 
 - Many-to-one with `users`
 - One-to-many with `collection_parts`
+
+### Table Tests
+
+**Use Case Name:** Create collection record
+
+**Description:** Verify a new collection can be created in the database.
+
+**Pre-conditions:** Database running.
+
+**Test Steps:**
+1. Ensure an existing user row is present in the database.
+2. Query the `user_id`.
+3. Add a name to the collection record.
+4. Insert a collection record with `user_id` and collection name.
+
+**Expected Result:** A collection row is generated with a unique `collection_id`.
+
+**Actual Result:** Collection row is generated with a unique `collection_id`.
+
+**Status:** Pass
+
+**Post-conditions:** User persisted.
 
 ---
 
@@ -433,3 +516,109 @@ sets -> inventories (MAX version) -> inventory_parts -> parts + colors
 ### Notes
 
 - `BrickDiffDTO` should include both the set quantity and the user's owned quantity per part so the frontend can render the diff without a second API call
+
+---
+
+## Data Access Methods
+
+### Method: `get_user_by_email()`
+
+**Description:** Get user by email, takes a string parameter `email` and includes the email in the query. Should return a single row or `None`.
+
+**Parameters:**
+- `email` (`str | None`) — unique email of a user
+
+**Return values:**
+- `User[user_id, username, email, created_at]` record
+
+**Tests:**
+- Assert that passing an email of an existing user returns a single row associated with that unique email.
+- Assert that passing an email of a non-existing user returns `None`.
+- Assert that passing an invalid argument returns `None`.
+
+**Page:** Called on each page in the application for user context and displaying appropriate data.
+
+---
+
+### Method: `get_sets()`
+
+**Description:** Returns a paginated list of sets with optional filters. Used by the Set Browser page.
+
+**Page:** Set_browser.html
+
+**Parameters:**
+- `page` (`int`) — page number
+- `page_size` (`int`) — number of results per page
+- `search` (`str | None`) — keyword filter on set name; `None` returns all
+
+**Return values:**
+- `List`
+
+**Tests:**
+- **Use Case Name:** Paginated set list
+- **Pre-conditions:** At least 13 sets exist in the database.
+- **Expected Result:** 12 sets returned.
+- **Status:** Pass
+
+---
+
+### Method: `get_brick_diff()`
+
+**Description:** Computes the diff between a set’s required parts and a user’s owned parts. Returns one `BrickDiffDTO` per part in the set, including both required and owned quantities. Used by Set Builder.
+
+**Page:** Set_builderr.html
+
+**Parameters:**
+- `set_num` (`str`) — the set to diff against
+- `collection_id` (`int`) — the user’s collection to compare
+
+**Return values:**
+- `List[BrickDiffDTO]`
+
+**Tests:**
+- **Use Case Name:** Diff with partial collection
+- **Pre-conditions:** Set has 3 required parts, user owns two of them.
+- **Expected Result:** N DTOs returned.
+- **Status:** Pass
+
+---
+
+### Method: `get_latest_inventory()`
+
+**Description:** Fetches the latest inventory records given a specific `set_num`. Fetch all inventories ordered by version, then aggregate records that belong to the highest version inventories.
+
+**Parameters:**
+- `set_num` (`str | None`) — set that the inventories belong to
+
+**Return values:**
+- `List[inventories]`
+
+**Tests:**
+- Assert that a queried `set_num` returns inventories with the latest version.
+- Assert that fetched inventories are not older than the highest version.
+- Assert that given an invalid `set_num`, `None` is returned.
+
+**Page:** Collection page
+
+---
+
+### Method: `get_collection_parts()`
+
+**Description:** Return all of the parts in a user’s collection.
+
+**Page:** `collection_browser.html`
+
+**Parameters:**
+- `user_id` (`int`)
+- `collection_id` (`int`)
+
+**Return values:**
+- `part_num` (`int`)
+- `color_name` (`string`)
+- `part_quantity` (`int`)
+
+**Tests:**
+- Assert that a `collection_id` with the wrong `user_id` returns no rows.
+- Assert that a `user_id` with the wrong `collection_id` returns no rows.
+- Assert that a correct `user_id` with a correct `collection_id` returns matching parts.
+
