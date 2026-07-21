@@ -1,8 +1,17 @@
-from flask import Flask
+"""WSGI entrypoint for the Brick Oracle Flask API."""
 
-app = Flask(__name__)
+from typing import Any
+
+from src import create_app
+from src.catalog.repository import table_row_counts
+
+app = create_app()
 
 
 @app.route("/")
-def hello_world():
-    return {"message": "Hello from the Brick Oracle API", "status": 200}
+def index() -> dict[str, Any]:
+    return {
+        "message": "Brick Oracle API Route: '/' ",
+        "counts": table_row_counts(),
+        "status": 200,
+    }
