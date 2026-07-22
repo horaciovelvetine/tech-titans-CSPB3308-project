@@ -36,4 +36,9 @@ __all__ = [
     "PartCategory",
     "PartRelationship",
     "Theme",
+    "User",
+    "Collection",
+    "Collection_Part",
+    "Storage_Bin",
+    "Bin_Part"
 ]

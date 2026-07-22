@@ -31,6 +31,11 @@ from ..models.catalog import (
     PartRelationship,
     Set,
     Theme,
+    User,
+    Collection,
+    Collection_Part,
+    Storage_Bin,
+    Bin_Part
 )
 
 
@@ -138,6 +143,24 @@ def list_part_relationships_for_part(part_num: str) -> Sequence[PartRelationship
     )
     return db.session.execute(stmt).scalars().all()
 
+def get_user(user_id: str) -> User | None:
+    return db.session.get(User, user_id)
+
+def list_user_collections(user_id: str) -> Sequence[Collection]:
+    stmt = select(Collection).where(Collection.user_id == user_id)
+    return db.session.execute(stmt).scalars().all()
+
+def list_collection_parts(collection_id: str) -> Sequence[Collection_Part]:
+    stmt = select(Collection_Part).where(Collection_Part.collection_id == collection_id)
+    return db.session.execute(stmt).scalars().all()
+
+def list_user_storage_bins(user_id: str) -> Sequence[Storage_Bin]:
+    stmt = select(Storage_Bin).where(Storage_Bin.user_id == user_id)
+    return db.session.execute(stmt).scalars().all()
+
+def list_storage_bin_parts(bin_id: str) -> Sequence[Bin_Part]:
+    stmt = select(Bin_Part).where(Bin_Part.bin_id == bin_id)
+    return db.session.execute(stmt).scalars().all()
 
 __all__ = [
     "get_color",
