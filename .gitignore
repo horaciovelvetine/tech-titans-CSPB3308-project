@@ -4,3 +4,4 @@
 
 # Remove .sqlite DB from tracking
 backend/instance/
+frontend/.keep
