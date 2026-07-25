@@ -1,4 +1,5 @@
 import { Link, Outlet } from '@tanstack/react-router';
+import './auth.css';
 
 export function AuthLayout() {
 	return (
