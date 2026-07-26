@@ -14,7 +14,7 @@ backend/brick-oracle-api/
     config.py             # env-based defaults
     extensions.py         # db = SQLAlchemy()
     models/
-      catalog.py          # 12 ORM models + CatalogMetadata marker
+      catalog.py          # 17 ORM models + CatalogMetadata marker
     catalog/
       csv_source.py       # stream rows from *.csv.zip with type coercion
       loader.py           # dependency-ordered bulk insert (5k-row batches)
@@ -156,6 +156,13 @@ All catalog reads go through `src.catalog.repository`. Use these inside a Flask 
 | `list_inventory_sets(inventory_id)` | Sub-sets in an inventory |
 | `list_elements_for_part(part_num)` | All elements for a part |
 | `list_part_relationships_for_part(part_num)` | Relationships where the part is child or parent |
+| `get_user(user_id)` | Fetch a user |
+| `list_user_collections(user_id)` | Collections owned by a user |
+| `list_collection_parts(collection_id)` | Parts in a collection |
+| `list_user_storage_bins(user_id)` | Storage bins owned by a user |
+| `list_storage_bin_parts(bin_id)` | Parts in a storage bin |
+
+`get_user`/`list_user_*` read from the new `users`, `collections`, `collection_parts`, `storage_bins`, and `bin_parts` tables (see [`src/models/catalog.py`](src/models/catalog.py)). Unlike the 12 catalog tables, these are user-owned data and are **not** covered by the immutability triggers.
 
 Example:
 
@@ -190,5 +197,5 @@ Running the seed against the real 1.5M-row `inventory_parts.csv` is a manual/loc
 ## Notes
 
 - The `assets/catalog-data/` zips are **not tracked in git** and must be present on disk locally for seeding to succeed.
-- No HTTP API routes expose catalog data yet — this work lands the data layer only.
+- No HTTP API routes expose catalog or user data yet — this work lands the data layer only.
 - Extended CSV columns beyond the original schema (`colors.num_parts/num_sets/y1/y2`, `elements.design_id`, `parts.part_material`, `sets/minifigs/inventory_parts.img_url`) are captured in the models and documented in `SQL_TESTING.md`.

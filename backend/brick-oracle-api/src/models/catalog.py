@@ -21,6 +21,8 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,
     Text,
+    UniqueConstraint,
+    func
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -52,6 +54,8 @@ class Color(db.Model):
         back_populates="color"
     )
     elements: Mapped[List["Element"]] = relationship(back_populates="color")
+    collection_parts: Mapped[List["Collection_Part"]] = relationship(back_populates="color")
+    bin_parts: Mapped[List["Bin_Part"]] = relationship(back_populates="color")
 
 
 class Theme(db.Model):
@@ -91,6 +95,8 @@ class Part(db.Model):
         foreign_keys="PartRelationship.parent_part_num",
         back_populates="parent_part",
     )
+    collection_parts: Mapped[List["Collection_Part"]] = relationship(back_populates="part")
+    bin_parts: Mapped[List["Bin_Part"]] = relationship(back_populates="part")
 
 
 class Minifig(db.Model):
@@ -252,6 +258,72 @@ class InventorySet(db.Model):
     inventory: Mapped["Inventory"] = relationship(back_populates="inventory_sets")
     set: Mapped["Set"] = relationship(back_populates="inventory_sets")
 
+class User(db.Model):
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(30), nullable=False, unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String(30))
+    # password hash is optional for now
+    password_hash: Mapped[str] = mapped_column(String(255))
+    # created_at is a timestamp for account creation and uses the server time as the default value
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    collections: Mapped[List["Collection"]] = relationship(back_populates="user")
+    storage_bins: Mapped[List["Storage_Bin"]] = relationship(back_populates="user")
+
+
+class Collection(db.Model):
+    __tablename__ = "collections"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
+    user: Mapped["User"] = relationship(back_populates="collections")
+    collection_parts: Mapped[List["Collection_Part"]] = relationship(back_populates="collection")
+    name: Mapped[str] = mapped_column(String(30))
+    # created_at is a timestamp for account creation and uses the server time as the default value
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+class Collection_Part(db.Model):
+    __tablename__ = "collection_parts"
+    __table_args__ = (
+    UniqueConstraint("collection_id", "part_num", "color_id", name="uq_collection_part_color"),
+    )
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    collection_id: Mapped[str] = mapped_column(ForeignKey("collections.id"))
+    collection: Mapped["Collection"] = relationship(back_populates="collection_parts")
+    part_num: Mapped[str] = mapped_column(ForeignKey("parts.part_num"))
+    part: Mapped["Part"] = relationship(back_populates="collection_parts")
+    color_id: Mapped[str] = mapped_column(ForeignKey("colors.id"))
+    color: Mapped["Color"] = relationship(back_populates="collection_parts")
+    quantity: Mapped[int] = mapped_column(Integer)
+
+
+class Storage_Bin(db.Model):
+    __tablename__ = "storage_bins"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
+    user: Mapped["User"] = relationship(back_populates="storage_bins")
+    name: Mapped[str] = mapped_column(String(30))
+    bin_parts: Mapped[List["Bin_Part"]] = relationship(back_populates="storage_bins")
+
+class Bin_Part(db.Model):
+    __tablename__ = "bin_parts"
+    __table_args__ = (
+        UniqueConstraint("bin_id", "part_num", "color_id", name="uq_bin_part"),
+    )
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    bin_id: Mapped[str] = mapped_column(ForeignKey("storage_bins.id"))
+    storage_bin: Mapped["Storage_Bin"] = relationship(back_populates="bin_parts")
+    part_num: Mapped[str] = mapped_column(ForeignKey("parts.part_num"))
+    part: Mapped["Part"] = relationship(back_populates="bin_parts")
+    color_id: Mapped[str] = mapped_column(ForeignKey("colors.id"))
+    color: Mapped["Color"] = relationship(back_populates="bin_parts")
+    quantity: Mapped[int] = mapped_column(Integer)
+
 
 class CatalogMetadata(db.Model):
     """Single-row marker table used to detect an already-seeded catalog.
@@ -301,4 +373,9 @@ __all__ = [
     "PartRelationship",
     "Set",
     "Theme",
+    "User",
+    "Collection",
+    "Collection_Part",
+    "Storage_Bin",
+    "Bin_Part"    
 ]
