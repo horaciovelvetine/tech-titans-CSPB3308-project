@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, Outlet, useRouterState } from '@tanstack/react-router';
+import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useAuth } from '../auth/use-auth';
 import './site-layout.css';
 
@@ -41,6 +41,12 @@ export function SiteLayout() {
 	const pathname = useRouterState({ select: state => state.location.pathname });
 	const isAuthRoute = pathname.startsWith('/auth');
 	const { isAuthenticated, user, logout } = useAuth();
+	const navigate = useNavigate();
+
+	function handleLogout() {
+		logout();
+		navigate({ to: '/' });
+	}
 
 	const [query, setQuery] = useState('');
 	const [target, setTarget] = useState<SearchTarget>('sets');
@@ -127,15 +133,15 @@ export function SiteLayout() {
 					<div className='header-user'>
 						<span className='header-avatar'>☺</span>
 						{isAuthenticated ? (
-							<>
+							<div className='header-user-info'>
 								<span className='header-username'>{user?.username}</span>
 								<button
 									type='button'
 									className='header-btn'
-									onClick={() => logout()}>
+									onClick={handleLogout}>
 									Log out
 								</button>
-							</>
+							</div>
 						) : (
 							<Link
 								search={{}}

@@ -129,6 +129,13 @@
 	line-height: 1;
 }
 
+.header-user-info {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.25rem;
+}
+
 .header-username {
 	font-size: 0.875rem;
 }

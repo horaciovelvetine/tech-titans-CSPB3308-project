@@ -18,6 +18,11 @@ from .catalog import (
     PartRelationship,
     Set as LegoSet,
     Theme,
+    User,
+    Collection,
+    Collection_Part,
+    Storage_Bin,
+    Bin_Part
 )
 
 __all__ = [
