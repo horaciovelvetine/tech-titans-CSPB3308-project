@@ -143,8 +143,16 @@ def list_part_relationships_for_part(part_num: str) -> Sequence[PartRelationship
     )
     return db.session.execute(stmt).scalars().all()
 
-def get_user(user_id: str) -> User | None:
+def get_user_by_id(user_id: str) -> User | None:
     return db.session.get(User, user_id)
+
+def get_user_by_email(user_email: str) -> User | None:
+    stmt = select(User).where(User.email == user_email)
+    return db.session.execute(stmt).scalar_one_or_none()
+
+def get_user_by_username(username: str) -> User | None:
+    stmt = select(User).where(User.username == username)
+    return db.session.execute(stmt).scalar_one_or_none()
 
 def list_user_collections(user_id: str) -> Sequence[Collection]:
     stmt = select(Collection).where(Collection.user_id == user_id)
@@ -170,6 +178,9 @@ __all__ = [
     "get_part_category",
     "get_set",
     "get_theme",
+    "get_user_by_email",
+    "get_user_by_id",
+    "get_user_by_username",
     "list_colors",
     "list_elements_for_part",
     "list_inventories_for_set",

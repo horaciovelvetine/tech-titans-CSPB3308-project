@@ -12,6 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..extensions import db
 from ..models.catalog import User
+from ..catalog.repository import get_user_by_email, get_user_by_username
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -30,10 +31,10 @@ def register():
     if not email or not username or not password:
         return jsonify({"error": "Email, username, and password are required."}), 400
 
-    if User.query.filter_by(email=email).first() is not None:
+    if get_user_by_email(email) is not None:
         return jsonify({"error": "Email is already registered."}), 409
 
-    if User.query.filter_by(username=username).first() is not None:
+    if get_user_by_username(username) is not None:
         return jsonify({"error": "Username is already taken."}), 409
 
     user = User(
@@ -55,7 +56,7 @@ def login():
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
 
-    user = User.query.filter_by(email=email).first()
+    user = get_user_by_email(email)
     if user is None or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid email or password."}), 401
 
