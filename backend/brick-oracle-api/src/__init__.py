@@ -40,7 +40,7 @@ def create_app(config_overrides: Mapping[str, Any] | None = None) -> Flask:
 
     db.init_app(app)
 
-    # from .models import catalog as _catalog_models  # noqa: F401 - register models
+    from .models import catalog as _catalog_models  # noqa: F401 - register models
 
     with app.app_context():
         db.create_all()
@@ -49,6 +49,10 @@ def create_app(config_overrides: Mapping[str, Any] | None = None) -> Flask:
             from .catalog.seed import ensure_catalog_loaded
 
             ensure_catalog_loaded(app)
+
+    from .auth import auth_bp
+
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
     return app
 

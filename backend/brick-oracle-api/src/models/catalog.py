@@ -307,7 +307,7 @@ class Storage_Bin(db.Model):
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
     user: Mapped["User"] = relationship(back_populates="storage_bins")
     name: Mapped[str] = mapped_column(String(30))
-    bin_parts: Mapped[List["Bin_Part"]] = relationship(back_populates="storage_bins")
+    bin_parts: Mapped[List["Bin_Part"]] = relationship(back_populates="storage_bin")
 
 class Bin_Part(db.Model):
     __tablename__ = "bin_parts"
