@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
+import type { SetDTO } from '../../types/set';
 import './set-detail-page.css';
 
 const routeApi = getRouteApi('/sets/$id');
 
 type Filter = 'all' | 'missing' | 'owned';
-
-interface SetDTO {
-	set_num: string;
-	name: string;
-	year: number | null;
-	num_parts: number | null;
-}
 
 interface BrickDiffDTO {
 	part_num: string;

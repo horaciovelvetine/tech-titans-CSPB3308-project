@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useAuth } from '../auth/use-auth';
+import type { SetDTO } from '../types/set';
 import './index-page.css';
-
-interface SetDTO {
-	set_num: string;
-	name: string;
-	year: number | null;
-	img_url: string | null;
-}
 
 const MOCK_TOTAL_SETS = 22_017;
 const MOCK_BRICKS_IN_COLLECTION = 1_243;

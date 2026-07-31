@@ -51,7 +51,7 @@ def create_app(config_overrides: Mapping[str, Any] | None = None) -> Flask:
             ensure_catalog_loaded(app)
 
     from .auth import auth_bp
-    from .routes import sets_bp
+    from .sets import sets_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(sets_bp)
