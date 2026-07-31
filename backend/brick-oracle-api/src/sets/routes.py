@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from flask import Blueprint, jsonify, request
 
-from .catalog.repository import list_sets, get_set
+from ..catalog.repository import list_sets, get_set
 
 sets_bp = Blueprint("sets", __name__, url_prefix="/api/sets")
 
