@@ -1,31 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from '@tanstack/react-router';
 import { useAuth } from '../auth/use-auth';
+import type { SetDTO } from '../types/set';
 import './index-page.css';
 
 const MOCK_TOTAL_SETS = 22_017;
 const MOCK_BRICKS_IN_COLLECTION = 1_243;
 const MOCK_SETS_BUILDABLE = 12;
-
-const MOCK_SETS = [
-	{ id: '75192-1', name: 'Millennium Falcon', year: 2017 },
-	{ id: '10300-1', name: 'Back to the Future Time Machine', year: 2022 },
-	{ id: '21325-1', name: 'Medieval Blacksmith', year: 2021 },
-	{ id: '75313-1', name: 'AT-AT', year: 2021 },
-	{ id: '10281-1', name: 'Bonsai Tree', year: 2021 },
-	{ id: '10290-1', name: 'Pickup Truck', year: 2022 },
-	{ id: '71374-1', name: 'Nintendo Entertainment System', year: 2020 },
-	{ id: '42099-1', name: 'RC Tracked Racer', year: 2019 },
-];
-
 const PAGE_SIZE = 4;
 
 export function IndexPage() {
 	const { isAuthenticated } = useAuth();
+	const [sets, setSets] = useState<SetDTO[]>([]);
 	const [start, setStart] = useState(0);
 
-	const visible = MOCK_SETS.slice(start, start + PAGE_SIZE);
+	useEffect(() => {
+		fetch('/api/sets/?page=1&page_size=12')
+			.then(r => r.json())
+			.then((data: SetDTO[]) => setSets(data))
+			.catch(() => setSets([]));
+	}, []);
+
+	const visible = sets.slice(start, start + PAGE_SIZE);
 	const canLeft = start > 0;
-	const canRight = start + PAGE_SIZE < MOCK_SETS.length;
+	const canRight = start + PAGE_SIZE < sets.length;
 
 	return (
 		<main className='index-page'>
@@ -54,26 +52,34 @@ export function IndexPage() {
 					<button
 						className='carousel-btn'
 						disabled={!canLeft}
-						onClick={() => setStart(s => Math.max(0, s - PAGE_SIZE))}
-					>
+						onClick={() => setStart(s => Math.max(0, s - PAGE_SIZE))}>
 						&#8249;
 					</button>
 					<div className='carousel-track'>
 						{visible.map(set => (
-							<div
-								key={set.id}
+							<Link
+								key={set.set_num}
+								to='/sets/$id'
+								params={{ id: set.set_num }}
 								className='set-card'>
-								<div className='set-card-img' />
+								{set.img_url ? (
+									<img
+										className='set-card-img'
+										src={set.img_url}
+										alt={set.name}
+									/>
+								) : (
+									<div className='set-card-img' />
+								)}
 								<p className='set-card-name'>{set.name}</p>
-								<p className='set-card-year'>{set.year}</p>
-							</div>
+								<p className='set-card-year'>{set.year ?? '—'}</p>
+							</Link>
 						))}
 					</div>
 					<button
 						className='carousel-btn'
 						disabled={!canRight}
-						onClick={() => setStart(s => Math.min(MOCK_SETS.length - PAGE_SIZE, s + PAGE_SIZE))}
-					>
+						onClick={() => setStart(s => Math.min(sets.length - PAGE_SIZE, s + PAGE_SIZE))}>
 						&#8250;
 					</button>
 				</div>
