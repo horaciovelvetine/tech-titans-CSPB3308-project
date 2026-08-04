@@ -56,8 +56,33 @@ def get_set(set_num: str) -> Set | None:
     return db.session.get(Set, set_num)
 
 
-def list_sets(limit: int = 50, offset: int = 0) -> Sequence[Set]:
-    stmt = select(Set).order_by(Set.set_num).limit(limit).offset(offset)
+_SETS_DEFAULT_SORT = "name"
+
+_SETS_SORT_ORDERS = {
+    "name": (func.coalesce(Set.name, "").asc(), Set.set_num.asc()),
+    "year-desc": (func.coalesce(Set.year, 0).desc(), Set.set_num.asc()),
+    "pieces-desc": (func.coalesce(Set.num_parts, 0).desc(), Set.set_num.asc()),
+}
+def list_sets(
+    limit: int = 50,
+    offset: int = 0,
+    theme_name: str | None = None,
+    max_parts: int | None = None,
+    sort: str | None = None,
+) -> Sequence[Set]:
+    """
+    List LEGO sets with optional filtering and sorting.
+    """
+    stmt = select(Set)
+
+    if theme_name:
+        stmt = stmt.join(Theme).where(Theme.name == theme_name)
+
+    if max_parts is not None:
+        stmt = stmt.where(func.coalesce(Set.num_parts, 0) <= max_parts)
+        
+    order_by = _SETS_SORT_ORDERS.get(sort) or _SETS_SORT_ORDERS[_SETS_DEFAULT_SORT]
+    stmt = stmt.order_by(*order_by).limit(limit).offset(offset)
     return db.session.execute(stmt).scalars().all()
 
 

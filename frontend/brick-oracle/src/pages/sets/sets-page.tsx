@@ -1,75 +1,97 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './sets-page.css';
 
-type SortMode = 'featured' | 'year-desc' | 'pieces-desc' | 'name';
+// These values are passed straight through to the API's `sort` parameter.
+type SortMode = 'name' | 'year-desc' | 'pieces-desc';
 
-// Creates LEGO set object to mock data
-interface LegoSet {
-	id: string;
+type ThemeOption = {
+	id: number;
 	name: string;
-	theme: string;
-	year: number;
-	pieces: number;
-}
+};
 
-// Build Mock sets
-const MOCK_SETS: LegoSet[] = Array.from({ length: 30 }, (_, index) => {
-	const themes = ['Architecture', 'Star Wars', 'Ideas', 'Icons', 'Creator Expert', 'Technic'] as const;
-	const theme = themes[index % themes.length];
-	const year = 2018 + (index % 8);
-	const pieces = 300 + ((index + 1) * 125);
+type LegoSet = {
+	set_num: string;
+	name: string | null;
+	year: number | null;
+	num_parts: number | null;
+	img_url: string | null;
+};
 
-	return {
-		id: `mock-${index + 1}`,
-		name: `Mock Set ${index + 1}`,
-		theme,
-		year,
-		pieces,
-	};
-});
-
-// Themes will be built from the real data, Mock for now.
-const THEMES = ['all', 'Architecture', 'Star Wars', 'Ideas', 'Icons', 'Creator Expert', 'Technic'] as const;
-const DEFAULT_VISIBLE_COUNT = 25;
-const LOAD_MORE_COUNT = 25;
+const PAGE_SIZE = 25;
 
 export function SetsPage() {
-	const [theme, setTheme] = useState<(typeof THEMES)[number]>('all');
+	const [theme, setTheme] = useState('all');
+	const [themes, setThemes] = useState<ThemeOption[]>([]);
+	const [sets, setSets] = useState<LegoSet[]>([]);
 	const [maxPieces, setMaxPieces] = useState('all');
-	const [sortMode, setSortMode] = useState<SortMode>('featured');
-	const [visibleCount, setVisibleCount] = useState(DEFAULT_VISIBLE_COUNT);
+	const [sortMode, setSortMode] = useState<SortMode>('name');
+	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
-	const filteredSets = useMemo(() => {
-		let nextSets = [...MOCK_SETS];
+	useEffect(() => {
+		fetch('/api/sets/themes')
+			.then(r => (r.ok ? r.json() : []))
+			.then((data: ThemeOption[]) => setThemes(data))
+			.catch(() => setThemes([]));
+	}, []);
 
+	useEffect(() => {
+		const controller = new AbortController();
+		const query = new URLSearchParams({ page: String(page), page_size: String(PAGE_SIZE) });
 		if (theme !== 'all') {
-			nextSets = nextSets.filter(set => set.theme === theme);
+			query.set('theme', theme);
 		}
-
 		if (maxPieces !== 'all') {
-			const limit = Number(maxPieces);
-			nextSets = nextSets.filter(set => set.pieces <= limit);
+			query.set('max_parts', maxPieces);
 		}
+		query.set('sort', sortMode);
 
-		switch (sortMode) {
-			case 'year-desc':
-				nextSets.sort((a, b) => b.year - a.year);
-				break;
-			case 'pieces-desc':
-				nextSets.sort((a, b) => b.pieces - a.pieces);
-				break;
-			case 'name':
-				nextSets.sort((a, b) => a.name.localeCompare(b.name));
-				break;
-			default:
-				nextSets.sort((a, b) => a.name.localeCompare(b.name));
-		}
+		setIsLoading(true);
+		fetch(`/api/sets/?${query.toString()}`, { signal: controller.signal })
+			.then(r => (r.ok ? r.json() : []))
+			.then((data: LegoSet[]) => {
+				// Page 1 replaces the list (filters or sort changed); later pages append.
+				setSets(prev => (page === 1 ? data : [...prev, ...data]));
+				// The API returns a bare array with no total, so a short page means the end.
+				setHasMore(data.length === PAGE_SIZE);
+				setIsLoading(false);
+			})
+			.catch(() => {
+				if (controller.signal.aborted) {
+					return;
+				}
+				setHasMore(false);
+				setIsLoading(false);
+			});
 
-		return nextSets;
-	}, [maxPieces, sortMode, theme]);
+		return () => controller.abort();
+	}, [theme, maxPieces, sortMode, page]);
 
-	const visibleSets = filteredSets.slice(0, visibleCount);
-	const hasMore = visibleCount < filteredSets.length;
+	// Filters and sorting both change which sets land on which page, so any
+	// change to them restarts paging from the top.
+	const resetPaging = () => {
+		setSets([]);
+		setPage(1);
+	};
+
+	// Handles changes to the theme filter
+	const handleThemeChange = (nextTheme: string) => {
+		setTheme(nextTheme);
+		resetPaging();
+	};
+
+	// Handles changes to the max pieces filter
+	const handleMaxPiecesChange = (nextMaxPieces: string) => {
+		setMaxPieces(nextMaxPieces);
+		resetPaging();
+	};
+
+	// Handles changes to the sort mode
+	const handleSortChange = (nextSortMode: SortMode) => {
+		setSortMode(nextSortMode);
+		resetPaging();
+	};
 
 	return (
 		<main className='sets-browser-page'>
@@ -80,14 +102,14 @@ export function SetsPage() {
 				</div>
 			</section>
 
-			
 			<section className='sets-browser-filters' aria-label='Set filters'>
 				<label className='filter-field'>
 					<span>Theme</span>
-					<select value={theme} onChange={e => setTheme(e.target.value as (typeof THEMES)[number])}>
-						{THEMES.map(option => (
-							<option key={option} value={option}>
-								{option === 'all' ? 'All themes' : option}
+					<select value={theme} onChange={e => handleThemeChange(e.target.value)}>
+						<option value='all'>All themes</option>
+						{themes.map(option => (
+							<option key={option.id} value={option.name}>
+								{option.name}
 							</option>
 						))}
 					</select>
@@ -95,7 +117,7 @@ export function SetsPage() {
 
 				<label className='filter-field'>
 					<span>Max pieces</span>
-					<select value={maxPieces} onChange={e => setMaxPieces(e.target.value)}>
+					<select value={maxPieces} onChange={e => handleMaxPiecesChange(e.target.value)}>
 						<option value='all'>Any size</option>
 						<option value='1000'>Up to 1,000</option>
 						<option value='3000'>Up to 3,000</option>
@@ -105,43 +127,43 @@ export function SetsPage() {
 
 				<label className='filter-field'>
 					<span>Sort</span>
-					<select value={sortMode} onChange={e => setSortMode(e.target.value as SortMode)}>
-						<option value='featured'>Featured</option>
+					<select value={sortMode} onChange={e => handleSortChange(e.target.value as SortMode)}>
+						<option value='name'>Name A-Z</option>
 						<option value='year-desc'>Newest first</option>
 						<option value='pieces-desc'>Most pieces</option>
-						<option value='name'>Name A-Z</option>
 					</select>
 				</label>
 			</section>
 
 			<section className='sets-grid-panel'>
 				<div className='sets-grid' role='list'>
-					{visibleSets.map(set => (
-						<article className='set-card' role='listitem' key={set.id}>
-							<div className='set-card-image' />
+					{sets.map(set => (
+						<article className='set-card' role='listitem' key={set.set_num}>
+							{set.img_url ? (
+								<img className='set-card-image' src={set.img_url} alt={set.name ?? 'LEGO set image'} />
+							) : (
+								<div className='set-card-image' />
+							)}
 							<div className='set-card-body'>
-								<p className='set-card-theme'>{set.theme}</p>
-								<h2 className='set-card-name'>{set.name}</h2>
+								<p className='set-card-theme'>{theme === 'all' ? 'All themes' : theme}</p>
+								<h2 className='set-card-name'>{set.name ?? 'Unknown set'}</h2>
 								<div className='set-card-meta'>
-									<span>{set.year}</span>
-									<span>{set.pieces.toLocaleString()} pcs</span>
+									<span>{set.year ?? '—'}</span>
+									<span>{(set.num_parts ?? 0).toLocaleString()} pcs</span>
 								</div>
 							</div>
 						</article>
 					))}
 				</div>
 
-				{filteredSets.length === 0 && (
-					<p className='sets-empty-state'>No sets match the selected filters yet.</p>
-				)}
-
 				{hasMore && (
 					<button
 						className='load-more-btn'
 						type='button'
-						onClick={() => setVisibleCount(count => count + LOAD_MORE_COUNT)}
+						disabled={isLoading}
+						onClick={() => setPage(current => current + 1)}
 					>
-						Load more
+						{isLoading ? 'Loading…' : 'Load more'}
 					</button>
 				)}
 			</section>
