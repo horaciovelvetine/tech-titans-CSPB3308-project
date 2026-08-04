@@ -63,6 +63,21 @@
 	flex-direction: column;
 }
 
+/* Fills the card so the whole tile is the click target, and drops the
+   default anchor colour/underline so the card still reads as a card. */
+.set-card-link {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	color: inherit;
+	text-decoration: none;
+}
+
+.set-card:hover,
+.set-card:focus-within {
+	border-color: var(--text-h);
+}
+
 .set-card-image {
 	width: 100%;
 	aspect-ratio: 4 / 3;

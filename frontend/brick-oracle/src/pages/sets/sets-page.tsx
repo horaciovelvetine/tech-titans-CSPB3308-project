@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from '@tanstack/react-router';
 import './sets-page.css';
 
 // These values are passed straight through to the API's `sort` parameter.
@@ -98,7 +99,7 @@ export function SetsPage() {
 			<section className='sets-browser-hero'>
 				<div>
 					<h1>Browse LEGO sets</h1>
-					<p className='sets-browser-copy'>Explore a simple mock catalog of LEGO sets.</p>
+					<p className='sets-browser-copy'>Explore a catalog of LEGO sets and figures.</p>
 				</div>
 			</section>
 
@@ -139,19 +140,23 @@ export function SetsPage() {
 				<div className='sets-grid' role='list'>
 					{sets.map(set => (
 						<article className='set-card' role='listitem' key={set.set_num}>
-							{set.img_url ? (
-								<img className='set-card-image' src={set.img_url} alt={set.name ?? 'LEGO set image'} />
-							) : (
-								<div className='set-card-image' />
-							)}
-							<div className='set-card-body'>
-								<p className='set-card-theme'>{theme === 'all' ? 'All themes' : theme}</p>
-								<h2 className='set-card-name'>{set.name ?? 'Unknown set'}</h2>
-								<div className='set-card-meta'>
-									<span>{set.year ?? '—'}</span>
-									<span>{(set.num_parts ?? 0).toLocaleString()} pcs</span>
+							{/* The link sits inside the article so the card keeps its listitem
+							    role and the anchor keeps its link role. */}
+							<Link className='set-card-link' to='/sets/$id' params={{ id: set.set_num }}>
+								{set.img_url ? (
+									<img className='set-card-image' src={set.img_url} alt={set.name ?? 'LEGO set image'} />
+								) : (
+									<div className='set-card-image' />
+								)}
+								<div className='set-card-body'>
+									<p className='set-card-theme'>{theme === 'all' ? 'All themes' : theme}</p>
+									<h2 className='set-card-name'>{set.name ?? 'Unknown set'}</h2>
+									<div className='set-card-meta'>
+										<span>{set.year ?? '—'}</span>
+										<span>{(set.num_parts ?? 0).toLocaleString()} pcs</span>
+									</div>
 								</div>
-							</div>
+							</Link>
 						</article>
 					))}
 				</div>
