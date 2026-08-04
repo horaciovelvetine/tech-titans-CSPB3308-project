@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
-import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
+import { Route as CollectionIndexRouteImport } from './routes/collection/index'
 import { Route as SetsIndexRouteImport } from './routes/sets/index'
 import { Route as SetsIdRouteImport } from './routes/sets/$id'
 
@@ -27,11 +27,6 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CollectionRoute = CollectionRouteImport.update({
-  id: '/collection',
-  path: '/collection',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -41,6 +36,11 @@ const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const CollectionIndexRoute = CollectionIndexRouteImport.update({
+  id: '/collection/',
+  path: '/collection/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SetsIndexRoute = SetsIndexRouteImport.update({
   id: '/sets/',
@@ -56,28 +56,28 @@ const SetsIdRoute = SetsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/collection': typeof CollectionRoute
   '/auth/register': typeof AuthRegisterRoute
   '/sets/$id': typeof SetsIdRoute
   '/auth/': typeof AuthIndexRoute
+  '/collection/': typeof CollectionIndexRoute
   '/sets/': typeof SetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/collection': typeof CollectionRoute
   '/auth/register': typeof AuthRegisterRoute
   '/sets/$id': typeof SetsIdRoute
   '/auth': typeof AuthIndexRoute
+  '/collection': typeof CollectionIndexRoute
   '/sets': typeof SetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/collection': typeof CollectionRoute
   '/auth/register': typeof AuthRegisterRoute
   '/sets/$id': typeof SetsIdRoute
   '/auth/': typeof AuthIndexRoute
+  '/collection/': typeof CollectionIndexRoute
   '/sets/': typeof SetsIndexRoute
 }
 export interface FileRouteTypes {
@@ -85,29 +85,29 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/collection'
     | '/auth/register'
     | '/sets/$id'
     | '/auth/'
+    | '/collection/'
     | '/sets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/collection' | '/auth/register' | '/sets/$id' | '/auth' | '/sets'
+  to: '/' | '/auth/register' | '/sets/$id' | '/auth' | '/collection' | '/sets'
   id:
     | '__root__'
     | '/'
     | '/auth'
-    | '/collection'
     | '/auth/register'
     | '/sets/$id'
     | '/auth/'
+    | '/collection/'
     | '/sets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  CollectionRoute: typeof CollectionRoute
   SetsIdRoute: typeof SetsIdRoute
+  CollectionIndexRoute: typeof CollectionIndexRoute
   SetsIndexRoute: typeof SetsIndexRoute
 }
 
@@ -127,13 +127,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/collection': {
-      id: '/collection'
-      path: '/collection'
-      fullPath: '/collection'
-      preLoaderRoute: typeof CollectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/': {
       id: '/auth/'
       path: '/'
@@ -147,6 +140,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/collection/': {
+      id: '/collection/'
+      path: '/collection'
+      fullPath: '/collection/'
+      preLoaderRoute: typeof CollectionIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/sets/': {
       id: '/sets/'
@@ -182,8 +182,8 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  CollectionRoute: CollectionRoute,
   SetsIdRoute: SetsIdRoute,
+  CollectionIndexRoute: CollectionIndexRoute,
   SetsIndexRoute: SetsIndexRoute,
 }
 export const routeTree = rootRouteImport
