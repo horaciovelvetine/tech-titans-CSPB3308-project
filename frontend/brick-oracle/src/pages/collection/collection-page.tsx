@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CollectionPartDTO } from '../../types/collection-part';
+import { AddPartModal } from './add-part-modal';
 import './collection-page.css';
 
 const MOCK_PARTS: CollectionPartDTO[] = [
@@ -9,8 +10,9 @@ const MOCK_PARTS: CollectionPartDTO[] = [
 ];
 
 export function CollectionPage() {
-	const [parts] = useState<CollectionPartDTO[]>(MOCK_PARTS);
+	const [parts, setParts] = useState<CollectionPartDTO[]>(MOCK_PARTS);
 	const [selected, setSelected] = useState<Set<string>>(new Set());
+	const [isAddOpen, setIsAddOpen] = useState(false);
 
 	const hasSelection = selected.size > 0;
 
@@ -26,11 +28,22 @@ export function CollectionPage() {
 		});
 	}
 
+	function onAddClick() {
+		setIsAddOpen(true);
+	}
+
+	function handleAddPart(part: Omit<CollectionPartDTO, 'id'>) {
+		setParts(prev => [...prev, { ...part, id: crypto.randomUUID() }]);
+		setIsAddOpen(false);
+	}
+
 	return (
 		<main className='collection-page'>
 			<div className='collection-toolbar'>
 				<button className='toolbar-btn'>Upload</button>
-				<button className='toolbar-btn'>Add</button>
+				<button className='toolbar-btn' onClick={onAddClick}>
+					Add
+				</button>
 				<button className='toolbar-btn' disabled={!hasSelection}>
 					Edit
 				</button>
@@ -67,6 +80,8 @@ export function CollectionPage() {
 					))}
 				</tbody>
 			</table>
+
+			<AddPartModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onAdd={handleAddPart} />
 		</main>
 	);
 }
