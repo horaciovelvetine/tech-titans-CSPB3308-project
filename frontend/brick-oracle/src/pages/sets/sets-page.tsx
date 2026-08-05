@@ -1,22 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
+import type { SetDTO } from '../../types/set';
+import type { ThemeOption } from '../../types/theme';
 import './sets-page.css';
 
 // These values are passed straight through to the API's `sort` parameter.
 type SortMode = 'name' | 'year-desc' | 'pieces-desc';
 
-type ThemeOption = {
-	id: number;
-	name: string;
-};
+// The API uses the shared set shape from `src/types/set.ts`.
+type LegoSet = SetDTO;
 
-type LegoSet = {
-	set_num: string;
-	name: string | null;
-	year: number | null;
-	num_parts: number | null;
-	img_url: string | null;
-};
 
 const PAGE_SIZE = 25;
 
